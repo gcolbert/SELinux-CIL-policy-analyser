@@ -1,0 +1,296 @@
+<module version="2.0">
+  <meta>
+    <identity>
+      <uri>urn:fr:selinux:visualization</uri>
+      <version>1.0.0</version>
+    </identity>
+    <info>
+      <name>SELinux policy modules</name>
+      <description>REST services for reading SELinux policy modules</description>
+    </info>
+  </meta>
+  <system>
+    <dynamic />
+  </system>
+
+  <rootspace uri="urn:fr:selinux:visualization:view" public="true" name="SELinux policy visualization (view)">
+    <!-- Dynamic Import into the HTTP fulcrum -->
+    <fileset>
+      <regex>res:/etc/system/SimpleDynamicImportHook.xml</regex>
+    </fileset>
+    <mapper>
+      <config>
+
+        <!-- Access point /visualization/policies/<policyname> -->
+        <endpoint>
+          <description>Checks if the given policy exists and if yes, displays possible URIs.</description>
+          <grammar>res:/visualization/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/vis-policy-view.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /visualization/policies/<policyname>/dependencies/<modulenames>/ -->
+        <endpoint>
+          <description>Displays the graph of many SELinux module dependencies (EXPERIMENTAL). Module names must be separated by '+'.</description>
+          <grammar>res:/visualization/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /dependencies/
+            <group name="modulenames">
+              <regex>[\-A-Za-z0-9._+]*</regex>
+            </group>
+            /
+          </grammar>
+          <request>
+            <identifier>res:/resources/html/graph.html</identifier>
+          </request>
+          <header name="mime">text/html</header>
+        </endpoint>
+
+        <!-- Access point /visualization/policies/<policyname>/modules/<modulename>/dependencies/ -->
+        <endpoint>
+          <description>Displays the graph of a SELinux module dependencies.</description>
+          <grammar>res:/visualization/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules/
+            <group name="modulename">
+              <regex type="nmtoken"/>
+            </group>
+            /dependencies/
+          </grammar>
+          <request>
+            <identifier>res:/resources/html/graph.html</identifier>
+          </request>
+          <header name="mime">text/html</header>
+        </endpoint>
+
+        <!-- Access point /visualization/policies/<policyname>/modules/<modulename>/dependents/ -->
+        <endpoint>
+          <description>Displays the graph of a SELinux module dependents.</description>
+          <grammar>res:/visualization/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules/
+            <group name="modulename">
+              <regex type="nmtoken"/>
+            </group>
+            /dependents/
+          </grammar>
+          <request>
+            <identifier>res:/resources/html/graph.html</identifier>
+          </request>
+          <header name="mime">text/html</header>
+        </endpoint>
+
+        <!-- Access point for html, css, js, json, xml, png and jpg files -->
+        <endpoint>
+          <grammar>res:/
+            <group name="file">
+              <regex>(?!(services)).*\.(html|css|js|json|xml|png|jpg)$</regex>
+            </group>
+          </grammar>
+          <request>
+            <identifier>res:/resources/[[arg:file]]</identifier>
+          </request>
+        </endpoint>
+      </config>
+      <space>
+        <fileset>
+          <regex>res:/resources/.*</regex>
+          <private />
+        </fileset>
+        <import>
+          <uri>urn:org:netkernel:lang:groovy</uri>
+          <private />
+        </import>
+        <import>
+          <uri>urn:org:netkernel:mod:hds</uri>
+          <private />
+        </import>
+      </space>
+    </mapper>
+  </rootspace>
+
+
+
+  <rootspace uri="urn:fr:selinux:visualization:model" public="true" name="SELinux policy visualization (model)">
+    <!-- Dynamic Import into the HTTP fulcrum -->
+    <fileset>
+      <regex>res:/etc/system/SimpleDynamicImportHook.xml</regex>
+    </fileset>
+    <mapper>
+      <config>
+
+        <!-- Access point /visualization/policies/<policyname>/dependencies/<modulenames>/data.xml -->
+        <endpoint>
+          <description>Displays the dependencies of the given modules, whose names must be separated by '+'.</description>
+          <grammar>res:/visualization/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /dependencies/
+            <group name="modulenames">
+              <regex>[\-A-Za-z0-9._+]*</regex>
+            </group>
+            /data.xml
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/vis-policy-modules-dependencies.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+            <argument name="modulenames" method="as-string">arg:modulenames</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /visualization/policies/<policyname>/dependencies/<modulenames>/data -->
+        <endpoint>
+          <grammar>res:/visualization/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /dependencies/
+            <group name="modulenames">
+              <regex>[\-A-Za-z0-9._+]*</regex>
+            </group>
+            /data
+          </grammar>
+          <request>
+            <identifier>active:JSONFromXML</identifier>
+            <argument name="operand">res:/visualization/policies/[[arg:policyname]]/dependencies/[[arg:modulenames]]/data.xml</argument>
+            <argument name="operator"><config><removeRootElement>true</removeRootElement></config></argument>
+          </request>
+          <header name="mime">application/json</header>
+        </endpoint>
+
+        <!-- *******************************************************************************************  -->
+
+        <!-- Access point /visualization/policies/<policyname>/modules/<modulename>/dependencies/data.xml -->
+        <endpoint>
+          <grammar>res:/visualization/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules/
+            <group name="modulename">
+              <regex type="nmtoken"/>
+            </group>
+            /dependencies/data.xml
+          </grammar>
+          <request>
+            <identifier>active:xslt</identifier>
+            <argument name="operand">res:/services/policies/[[arg:policyname]]/modules/[[arg:modulename]]/dependencies</argument>
+            <argument name="operator">res:/resources/scripts/dependencies-adapt.xsl</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+            <argument name="modulename" method="as-string">arg:modulename</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /visualization/policies/<policyname>/modules/<modulename>/dependencies/data -->
+        <endpoint>
+          <grammar>res:/visualization/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules/
+            <group name="modulename">
+              <regex type="nmtoken"/>
+            </group>
+            /dependencies/data
+          </grammar>
+          <request>
+            <identifier>active:JSONFromXML</identifier>
+            <argument name="operand">res:/visualization/policies/[[arg:policyname]]/modules/[[arg:modulename]]/dependencies/data.xml</argument>
+            <argument name="operator"><config><removeRootElement>true</removeRootElement></config></argument>
+          </request>
+          <header name="mime">application/json</header>
+        </endpoint>
+
+        <!-- *****************************************************************************************  -->
+
+        <!-- Access point /visualization/policies/<policyname>/modules/<modulename>/dependents/data.xml -->
+        <endpoint>
+          <grammar>res:/visualization/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules/
+            <group name="modulename">
+              <regex type="nmtoken"/>
+            </group>
+            /dependents/data.xml
+          </grammar>
+          <request>
+            <identifier>active:xslt</identifier>
+            <argument name="operand">res:/services/policies/[[arg:policyname]]/modules/[[arg:modulename]]/dependents</argument>
+            <argument name="operator">res:/resources/scripts/dependencies-adapt.xsl</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+            <argument name="modulename" method="as-string">arg:modulename</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /visualization/policies/<policyname>/modules/<modulename>/dependencies/data -->
+        <endpoint>
+          <grammar>res:/visualization/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules/
+            <group name="modulename">
+              <regex type="nmtoken"/>
+            </group>
+            /dependents/data
+          </grammar>
+          <request>
+            <identifier>active:JSONFromXML</identifier>
+            <argument name="operand">res:/visualization/policies/[[arg:policyname]]/modules/[[arg:modulename]]/dependents/data.xml</argument>
+            <argument name="operator"><config><removeRootElement>true</removeRootElement></config></argument>
+          </request>
+          <header name="mime">application/json</header>
+        </endpoint>
+
+      </config>
+      <space>
+        <fileset>
+          <regex>res:/resources/.*</regex>
+          <private />
+        </fileset>
+        <import>
+          <uri>urn:fr:selinux:services:policies</uri>
+          <private />
+        </import>
+        <import>
+          <!-- active:groovy -->
+          <uri>urn:org:netkernel:lang:groovy</uri>
+          <private />
+        </import>
+        <import>
+          <!-- active:xslt -->
+          <uri>urn:org:netkernel:xml:core</uri>
+          <private />
+        </import>
+        <import>
+          <!-- active:JSONFromXML -->
+          <uri>urn:org:netkernel:json:core</uri>
+          <private />
+        </import>
+        <import>
+          <uri>urn:org:netkernel:mod:hds</uri>
+          <private />
+        </import>
+      </space>
+    </mapper>
+  </rootspace>
+
+</module>
+

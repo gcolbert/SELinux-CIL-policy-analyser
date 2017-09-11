@@ -1,0 +1,368 @@
+<module version="2.0">
+  <meta>
+    <identity>
+      <uri>urn:fr:selinux:services</uri>
+      <version>1.0.0</version>
+    </identity>
+    <info>
+      <name>SELinux policy modules</name>
+      <description>REST services for reading SELinux policy modules</description>
+    </info>
+  </meta>
+  <system>
+    <dynamic />
+  </system>
+
+  <rootspace uri="urn:fr:selinux:services:policies" public="true" name="SELinux policy analysis">
+    <!-- Dynamic Import into the HTTP fulcrum -->
+    <fileset>
+      <regex>res:/etc/system/SimpleDynamicImportHook.xml</regex>
+    </fileset>
+    <mapper>
+      <config>
+
+        <!--  ***************************** POLICY ***************************** -->
+
+        <!-- Access point /services/policies/<somePolicy> -->
+        <endpoint>
+          <description>Checks if the given policy exists and if yes, displays possible URIs.</description>
+          <grammar>res:/services/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/policy-view.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /services/policies/<somePolicy>/query/<instructionCIL> -->
+        <endpoint>
+          <description>Returns the expressions with the given CIL instruction, for the whole policy.</description>
+          <grammar>res:/services/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /query/
+            <group name="queryname" min="0">
+              <regex type="nmtoken"/>
+            </group>
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/policy-query.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+            <argument name="queryname" method="as-string">arg:queryname</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /services/policies/<somePolicy>/lookup/<symbol> -->
+        <endpoint>
+          <description>Returns the expression defining the given symbol, for the whole policy.</description>
+          <grammar>res:/services/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /lookup/
+            <group name="symbol" min="0">
+              <regex type="nmtoken"/>
+            </group>
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/policy-lookup-symbol.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+            <argument name="symbol" method="as-string">arg:symbol</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /services/policies/<somePolicy>/filepaths/<filepath> -->
+        <endpoint>
+          <description>Lists the modules of the given SELinux policy.</description>
+          <grammar>res:/services/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /filepaths/
+            <group name="filepath" min="0">
+              <regex type="anything"/>
+            </group>
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/policy-filepaths.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+            <argument name="filepath" method="as-string">arg:filepath</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /services/policies/<somePolicy>/{accessrules,auditrules}/<domain> -->
+        <endpoint>
+          <description>Displays the access rules that reference the given domain in the given policy.</description>
+          <grammar>res:/services/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /
+            <group name="rules">
+              <regex>(accessrules|auditrules)</regex>
+            </group>
+            /
+            <group name="domain">
+              <regex type="nmtoken"/>
+            </group>
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/policy-rules.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+            <argument name="domain" method="as-string">arg:domain</argument>
+            <argument name="rules" method="as-string">arg:rules</argument>
+          </request>
+        </endpoint>
+
+        <!-- ***************************** MODULE ***************************** -->
+
+
+        <!-- Access point /services/policies/<somePolicy>/modules -->
+        <endpoint>
+          <description>Lists the modules of the given SELinux policy.</description>
+          <grammar>res:/services/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/policy-get-modules.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /services/policies/<somePolicy>/modules/<someModule> -->
+        <endpoint>
+          <description>Checks if the module exists, and if yes, displays possible URIs.</description>
+          <grammar>res:/services/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules/
+            <group name="modulename">
+              <regex type="nmtoken"/>
+            </group>
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/module-view.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+            <argument name="modulename" method="as-string">arg:modulename</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /services/policies/<somePolicy>/modules/<someModule>/cil -->
+        <endpoint>
+          <description>Displays the instructions of the given module in CIL format.</description>
+          <grammar>res:/services/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules/
+            <group name="modulename">
+              <regex type="nmtoken"/>
+            </group>
+            /cil
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/module-get-cil.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+            <argument name="modulename" method="as-string">arg:modulename</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /services/policies/<somePolicy>/modules/<someModule>/query/<instructionCIL> -->
+        <endpoint>
+          <description>Returns the expressions with the given CIL instruction, for the given module.</description>
+          <grammar>res:/services/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules/
+            <group name="modulename">
+              <regex type="nmtoken"/>
+            </group>
+            /query/
+            <group name="queryname" min="0">
+              <regex type="nmtoken"/>
+            </group>
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/module-query.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+            <argument name="modulename" method="as-string">arg:modulename</argument>
+            <argument name="queryname" method="as-string">arg:queryname</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /services/policies/<somePolicy>/modules/<someModule>/lookup/<symbol> -->
+        <endpoint>
+          <description>Returns the expression that defines the given symbol in this module, if found.</description>
+          <grammar>res:/services/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules/
+            <group name="modulename">
+              <regex type="nmtoken"/>
+            </group>
+            /lookup/
+            <group name="symbol">
+              <regex type="nmtoken"/>
+            </group>
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/module-lookup-symbol.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+            <argument name="modulename" method="as-string">arg:modulename</argument>
+            <argument name="symbol" method="as-string">arg:symbol</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /services/policies/<somePolicy>/modules/<someModule>/dependencies -->
+        <endpoint>
+          <description>Displays the dependencies of the given module.</description>
+          <grammar>res:/services/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules/
+            <group name="modulename">
+              <regex type="nmtoken"/>
+            </group>
+            /dependencies
+            <optional>
+              /
+              <group name="details">
+                <regex>details</regex>
+              </group>
+            </optional>
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/module-dependencies.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+            <argument name="modulename" method="as-string">arg:modulename</argument>
+            <argument name="details">
+              <literal type="boolean">false</literal>
+            </argument>
+            <argument name="details" method="as-string">arg:details</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /services/policies/<somePolicy>/modules/<someModule>/dependents -->
+        <endpoint>
+          <description>Displays the modules that depends on the given module.</description>
+          <grammar>res:/services/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules/
+            <group name="modulename">
+              <regex type="nmtoken"/>
+            </group>
+            /dependents
+            <optional>
+              /
+              <group name="details">
+                <regex>details</regex>
+              </group>
+            </optional>
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/module-dependents.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+            <argument name="modulename" method="as-string">arg:modulename</argument>
+            <argument name="details">
+              <literal type="boolean">false</literal>
+            </argument>
+            <argument name="details" method="as-string">arg:details</argument>
+          </request>
+        </endpoint>
+
+        <!-- Access point /services/policies/<somePolicy>/modules/<someModule>/optionals -->
+        <endpoint>
+          <description>Displays the optional blocks of the given module.</description>
+          <grammar>res:/services/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules/
+            <group name="modulename">
+              <regex type="nmtoken"/>
+            </group>
+            /optionals
+          </grammar>
+          <request>
+            <identifier>res:/services/policies/[[arg:policyname]]/modules/[[arg:modulename]]/query/optional</identifier>
+          </request>
+        </endpoint>
+
+        <!-- Access point /services/policies/<somePolicy>/modules/<someModule>/optionals/<someOptionalBlockName> -->
+        <endpoint>
+          <description>Displays a given optional block of the given module.</description>
+          <grammar>res:/services/policies/
+            <group name="policyname">
+              <regex type="alphanum"/>
+            </group>
+            /modules/
+            <group name="modulename">
+              <regex type="nmtoken"/>
+            </group>
+            /optionals/
+            <group name="optionalname">
+              <regex type="nmtoken"/>
+            </group>
+          </grammar>
+          <request>
+            <identifier>active:groovy</identifier>
+            <argument name="operator">res:/resources/scripts/module-optional.gy</argument>
+            <argument name="policyname" method="as-string">arg:policyname</argument>
+            <argument name="modulename" method="as-string">arg:modulename</argument>
+            <argument name="optionalname" method="as-string">arg:optionalname</argument>
+          </request>
+        </endpoint>
+
+      </config>
+      <space>
+        <fileset>
+          <regex>res:/resources/.*</regex>
+          <private />
+        </fileset>
+        <import>
+          <uri>urn:fr:tools:archives:bunzip2</uri>
+          <private />
+        </import>
+        <import>
+          <uri>urn:fr:tools:sexpr:parser</uri>
+          <private />
+        </import>
+        <import>
+          <uri>urn:org:netkernel:lang:groovy</uri>
+          <private />
+        </import>
+        <import>
+          <uri>urn:org:netkernel:mod:hds</uri>
+          <private />
+        </import>
+      </space>
+    </mapper>
+  </rootspace>
+
+</module>
+

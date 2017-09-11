@@ -1,0 +1,34 @@
+<module version="2.0">
+  <meta>
+    <identity>
+      <uri>urn:fr:tools:archives</uri>
+      <version>1.0.0</version>
+    </identity>
+    <info>
+      <name>Archive tools</name>
+      <description>An accessor for bunzip2</description>
+    </info>
+  </meta>
+  <system>
+    <dynamic />
+  </system>
+
+  <rootspace uri="urn:fr:tools:archives:bunzip2" public="true" name="Bunzip2 accessor">
+    <accessor>
+      <id>bunzip2</id>
+      <grammar>
+        <active>
+          <identifier>active:bunzip2</identifier>
+          <argument name="operand" desc="The bz2 input stream to inflate (uncompress)." />
+        </active>
+      </grammar>
+      <class>fr.tools.archives.bunzip2.Bunzip2Accessor</class>
+    </accessor>
+    <fileset>
+      <private />
+      <regex>res:/.*</regex>
+    </fileset>
+  </rootspace>
+
+</module>
+

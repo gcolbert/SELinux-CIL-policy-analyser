@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Module dependencies</title>
+<meta charset="utf-8" />
+<style>
+
+.link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+.node circle {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+text {
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+
+</style>
+</head>
+<body>
+<script src="../../../../../../js/d3.v3.min.js"></script>
+<script>
+
+treeJSON = d3.json("data", function(error, graphData) {
+
+    var nodes = {};
+
+    // Compute the distinct nodes from the links.
+    graphData.link.forEach(function(link) {
+      link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, type:link.type});
+      link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, type:link.type});
+    });
+
+    var urlPath = window.location.pathname.split("/");
+    var current_module_name = urlPath[urlPath.length-3];
+
+    var width = window.innerWidth,
+        height = window.innerHeight;
+
+    var force = d3.layout.force()
+        .nodes(d3.values(nodes))
+        .links(graphData.link)
+        .size([width, height])
+        .linkDistance(220)
+        .charge(-1000)
+        .on("tick", tick)
+        .start();
+
+    var svg = d3.select("body").append("svg")
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .attr("viewBox", "0 0 "+width+" "+height);
+
+    var link = svg.selectAll(".link")
+        .data(force.links())
+      .enter().append("line")
+        .attr("class", "link")
+        .style("stroke", function(d){ 
+            if(d.type === "optional") {return 'lightgray'} else {return 'orange'} 
+        });
+
+    var node = svg.selectAll(".node")
+        .data(force.nodes())
+      .enter().append("g")
+        .attr("class", "node")
+        .on("mouseover", mouseover)
+        .on("mouseout", mouseout)
+        .call(force.drag);
+
+    node.append("circle")
+        .attr("r", 8)
+        .style("fill", function(d){
+            if(d.name === current_module_name) {return 'indianred'}
+            if(d.type === "optional") {return 'lightgray'} else {return 'orange'} 
+        });
+
+    node.append("text")
+        .attr("x", 12)
+        .attr("dy", ".35em")
+        .style("font-size",".8em")
+        .text(function(d) { return d.name; });
+
+    node.on("click", function(d) {
+        if (urlPath.length > 1) {
+            window.location = window.location.href.replace(current_module_name,d.name);
+        }
+    });
+
+    function tick() {
+      link
+          .attr("x1", function(d) { return d.source.x; })
+          .attr("y1", function(d) { return d.source.y; })
+          .attr("x2", function(d) { return d.target.x; })
+          .attr("y2", function(d) { return d.target.y; });
+
+      node
+          .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+    }
+
+    function mouseover() {
+      d3.select(this).select("circle").transition()
+          .duration(750)
+          .attr("r", 16);
+    }
+
+    function mouseout() {
+      d3.select(this).select("circle").transition()
+          .duration(750)
+          .attr("r", 8);
+    }
+
+
+});
+
+</script>
+</body>
+</html>
+

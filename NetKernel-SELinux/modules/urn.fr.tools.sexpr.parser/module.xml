@@ -1,0 +1,55 @@
+<module version="2.0">
+  <meta>
+    <identity>
+      <uri>urn:fr:tools:sexpr</uri>
+      <version>1.0.0</version>
+    </identity>
+    <info>
+      <name>S-Expression tools</name>
+      <description>Tools for S-Expressions</description>
+    </info>
+  </meta>
+  <system>
+    <dynamic />
+  </system>
+
+  <rootspace uri="urn:fr:tools:sexpr:parser" public="true" name="S-Expression parser accessor">
+
+    <accessor>
+      <id>S-Expression parser</id>
+      <grammar>
+        <active>
+          <identifier>active:s-expression-parser</identifier>
+          <argument name="operand" desc="The S-Expressions to parse." />
+          <argument name="module" desc="Name of the module (not used internally, only for tagging the output lists)." />
+        </active>
+      </grammar>
+      <class>fr.tools.sexpr.parser.accessor.SExprParserAccessor</class>
+    </accessor>
+
+    <accessor>
+      <id>S-Expression parser with filtering capability</id>
+      <grammar>
+        <active>
+          <identifier>active:s-expression-parser-with-filter</identifier>
+          <argument name="operand" desc="The S-Expressions to parse." />
+          <argument name="filter-type" desc="Must be set to either 'onInstructionName', 'onArg1Value', 'onArg2Value', 'onSymbol', 'onSymbolRequires', 'onAccessRules' or 'onAuditRules'." />
+          <argument name="filter-value" desc="The value that we want to keep in the returned representation. Non-matching values are not returned. If set to empty string, no filtering is done." />
+          <argument name="module" desc="Name of the module (not used internally, only for tagging the output lists)." />
+        </active>
+      </grammar>
+      <class>fr.tools.sexpr.parser.accessor.SExprFilterAccessor</class>
+    </accessor>
+
+    <fileset>
+      <private />
+      <regex>res:/.*</regex>
+    </fileset>
+    <import>
+	  <private />
+      <uri>urn:org:netkernel:mod:hds</uri>
+    </import>
+  </rootspace>
+
+</module>
+
