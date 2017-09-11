@@ -55,17 +55,17 @@ to the folder you created.
 
 For example with the `targeted` policy and a `user` Unix name, the commands would be:
 
-    `$ mkdir -p NetKernel-SELinux/modules/urn.fr.selinux.services/resources/data/targeted`
+    $ mkdir -p NetKernel-SELinux/modules/urn.fr.selinux.services/resources/data/targeted
     
-    `$ cd NetKernel-SELinux/modules/urn.fr.selinux.services/resources/data/targeted`
+    $ cd NetKernel-SELinux/modules/urn.fr.selinux.services/resources/data/targeted
     
-    `$ sudo su`
+    $ sudo su
     
-    `[sudo] password for user:`
+    [sudo] password for user:
     
-    `# cp -r /etc/selinux/targeted/active/modules/100/* .`
+    # cp -r /etc/selinux/targeted/active/modules/100/* .
     
-    `# chown -R user:user .`
+    # chown -R user:user .
 
 Running
 -------
