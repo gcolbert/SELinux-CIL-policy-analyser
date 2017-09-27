@@ -25,40 +25,52 @@ text {
 </style>
 </head>
 <body>
-<script src="../../../../../../js/d3.v3.min.js"></script>
+<script src="../../../../../../js/d3.v4.min.js"></script>
 <script>
+d3.json("data", function(error, graphData) {
 
-treeJSON = d3.json("data", function(error, graphData) {
-
-    var nodes = {};
-
-    // Compute the distinct nodes from the links.
-    graphData.link.forEach(function(link) {
-      link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, type:link.type});
-      link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, type:link.type});
-    });
+    if (error) {
+        throw error;
+    }
 
     var urlPath = window.location.pathname.split("/");
-    var current_module_name = urlPath[urlPath.length-3];
+    var currentModuleName = urlPath[urlPath.length-3];
 
-    var width = window.innerWidth,
-        height = window.innerHeight;
-
-    var force = d3.layout.force()
-        .nodes(d3.values(nodes))
-        .links(graphData.link)
-        .size([width, height])
-        .linkDistance(220)
-        .charge(-1000)
-        .on("tick", tick)
-        .start();
+    var width = window.innerWidth;
+    var height = window.innerHeight;
 
     var svg = d3.select("body").append("svg")
-        .attr("preserveAspectRatio", "xMidYMid meet")
-        .attr("viewBox", "0 0 "+width+" "+height);
+            .attr("preserveAspectRatio", "xMidYMid meet")
+            .attr("viewBox", "0 0 "+width+" "+height);
+
+    // The nodes
+    var nodes = {};
+    // If there is only one other node, there is no array in the JSON data, so we create one
+    if (!isArray(graphData.link)) {
+        graphData.link = [ graphData.link ];
+    }
+    // Compute the distinct nodes from the links in the JSON data.
+    graphData.link.forEach(function(link) {
+        link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, type:link.type});
+        link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, type:link.type});
+    });
+
+    var simulation = d3.forceSimulation()
+                   .force('link', d3.forceLink())
+                   .force('charge', d3.forceManyBody().strength(-1000))
+                   .force('center', d3.forceCenter(width / 2, height / 2));
+
+    simulation
+        .nodes(d3.values(nodes))
+        .on("tick", ticked);
+
+    simulation
+        .force("link")
+        .links(graphData.link)
+        .distance(220);
 
     var link = svg.selectAll(".link")
-        .data(force.links())
+        .data(graphData.link)
       .enter().append("line")
         .attr("class", "link")
         .style("stroke", function(d){ 
@@ -66,17 +78,16 @@ treeJSON = d3.json("data", function(error, graphData) {
         });
 
     var node = svg.selectAll(".node")
-        .data(force.nodes())
+        .data(d3.values(nodes))
       .enter().append("g")
         .attr("class", "node")
         .on("mouseover", mouseover)
-        .on("mouseout", mouseout)
-        .call(force.drag);
+        .on("mouseout", mouseout);
 
     node.append("circle")
         .attr("r", 8)
-        .style("fill", function(d){
-            if(d.name === current_module_name) {return 'indianred'}
+        .style("fill", function(d) {
+            if(d.name === currentModuleName) {return 'indianred'}
             if(d.type === "optional") {return 'lightgray'} else {return 'orange'} 
         });
 
@@ -88,19 +99,16 @@ treeJSON = d3.json("data", function(error, graphData) {
 
     node.on("click", function(d) {
         if (urlPath.length > 1) {
-            window.location = window.location.href.replace(current_module_name,d.name);
+            window.location = window.location.href.replace(currentModuleName, d.name);
         }
     });
 
-    function tick() {
-      link
-          .attr("x1", function(d) { return d.source.x; })
-          .attr("y1", function(d) { return d.source.y; })
-          .attr("x2", function(d) { return d.target.x; })
-          .attr("y2", function(d) { return d.target.y; });
-
-      node
-          .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+    function ticked() {
+        link.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+        node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
     }
 
     function mouseover() {
@@ -115,6 +123,9 @@ treeJSON = d3.json("data", function(error, graphData) {
           .attr("r", 8);
     }
 
+    function isArray(what) {
+        return Object.prototype.toString.call(what) === '[object Array]';
+    }
 
 });
 

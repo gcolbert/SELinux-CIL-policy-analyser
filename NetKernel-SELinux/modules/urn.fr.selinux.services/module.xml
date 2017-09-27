@@ -33,7 +33,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/policy-view.gy</argument>
+            <argument name="operator">res:/resources/scripts/policy-view.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
           </request>
         </endpoint>
@@ -52,7 +52,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/policy-query.gy</argument>
+            <argument name="operator">res:/resources/scripts/policy-query.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
             <argument name="queryname" method="as-string">arg:queryname</argument>
           </request>
@@ -72,7 +72,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/policy-lookup-symbol.gy</argument>
+            <argument name="operator">res:/resources/scripts/policy-lookup-symbol.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
             <argument name="symbol" method="as-string">arg:symbol</argument>
           </request>
@@ -92,7 +92,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/policy-filepaths.gy</argument>
+            <argument name="operator">res:/resources/scripts/policy-filepaths.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
             <argument name="filepath" method="as-string">arg:filepath</argument>
           </request>
@@ -116,7 +116,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/policy-rules.gy</argument>
+            <argument name="operator">res:/resources/scripts/policy-rules.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
             <argument name="domain" method="as-string">arg:domain</argument>
             <argument name="rules" method="as-string">arg:rules</argument>
@@ -137,7 +137,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/policy-get-modules.gy</argument>
+            <argument name="operator">res:/resources/scripts/policy-get-modules.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
           </request>
         </endpoint>
@@ -156,7 +156,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/module-view.gy</argument>
+            <argument name="operator">res:/resources/scripts/module-view.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
             <argument name="modulename" method="as-string">arg:modulename</argument>
           </request>
@@ -177,7 +177,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/module-get-cil.gy</argument>
+            <argument name="operator">res:/resources/scripts/module-get-cil.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
             <argument name="modulename" method="as-string">arg:modulename</argument>
           </request>
@@ -201,7 +201,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/module-query.gy</argument>
+            <argument name="operator">res:/resources/scripts/module-query.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
             <argument name="modulename" method="as-string">arg:modulename</argument>
             <argument name="queryname" method="as-string">arg:queryname</argument>
@@ -226,7 +226,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/module-lookup-symbol.gy</argument>
+            <argument name="operator">res:/resources/scripts/module-lookup-symbol.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
             <argument name="modulename" method="as-string">arg:modulename</argument>
             <argument name="symbol" method="as-string">arg:symbol</argument>
@@ -254,7 +254,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/module-dependencies.gy</argument>
+            <argument name="operator">res:/resources/scripts/module-dependencies.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
             <argument name="modulename" method="as-string">arg:modulename</argument>
             <argument name="details">
@@ -285,7 +285,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/module-dependents.gy</argument>
+            <argument name="operator">res:/resources/scripts/module-dependents.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
             <argument name="modulename" method="as-string">arg:modulename</argument>
             <argument name="details">
@@ -331,7 +331,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/module-optional.gy</argument>
+            <argument name="operator">res:/resources/scripts/module-optional.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
             <argument name="modulename" method="as-string">arg:modulename</argument>
             <argument name="optionalname" method="as-string">arg:optionalname</argument>

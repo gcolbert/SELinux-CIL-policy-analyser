@@ -31,7 +31,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/vis-policy-view.gy</argument>
+            <argument name="operator">res:/resources/scripts/vis-policy-view.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
           </request>
         </endpoint>
@@ -147,7 +147,7 @@
           </grammar>
           <request>
             <identifier>active:groovy</identifier>
-            <argument name="operator">res:/resources/scripts/vis-policy-modules-dependencies.gy</argument>
+            <argument name="operator">res:/resources/scripts/vis-policy-modules-dependencies.groovy</argument>
             <argument name="policyname" method="as-string">arg:policyname</argument>
             <argument name="modulenames" method="as-string">arg:modulenames</argument>
           </request>

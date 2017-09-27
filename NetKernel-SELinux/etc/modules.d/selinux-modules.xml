@@ -1,10 +1,10 @@
 <modules>
   <module
-runlevel="7">../NetKernel-SELinux/modules/urn.fr.tools.archives.bunzip2/</module>
+runlevel="7">../SELinux-CIL-policy-analyser/NetKernel-SELinux/modules/urn.fr.tools.archives.bunzip2/</module>
   <module
-runlevel="7">../NetKernel-SELinux/modules/urn.fr.tools.sexpr.parser/</module>
+runlevel="7">../SELinux-CIL-policy-analyser/NetKernel-SELinux/modules/urn.fr.tools.sexpr.parser/</module>
   <module
-runlevel="7">../NetKernel-SELinux/modules/urn.fr.selinux.services/</module>
+runlevel="7">../SELinux-CIL-policy-analyser/NetKernel-SELinux/modules/urn.fr.selinux.services/</module>
   <module
-runlevel="7">../NetKernel-SELinux/modules/urn.fr.selinux.visualization/</module>
+runlevel="7">../SELinux-CIL-policy-analyser/NetKernel-SELinux/modules/urn.fr.selinux.visualization/</module>
 </modules>
